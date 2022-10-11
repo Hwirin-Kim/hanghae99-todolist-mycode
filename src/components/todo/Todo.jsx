@@ -1,41 +1,64 @@
 import { useState } from "react";
-import "./style.css";
 
-function Todo({ a, todos, setTodos }) {
-  const deleteTodo = () => {
-    //삭제하기 버튼의 onclick함수, filter를 통해 a.id(list로부터 받아온 각각의 todo)와 콜백으로 불러온 todos의 각원소들의 id가 일치하는경우 그 원소 삭제
-    let newDeleteTodo = todos.filter((todo) => {
-      return a.id !== todo.id;
-    });
-    //필터링된 배열로 다시 setTodos를 이용해 todos를 변경함
-    setTodos(newDeleteTodo);
+import { useDispatch, useSelector } from "react-redux";
+import { delTodo, doneTodo } from "../../redux/modules/todos";
+import { useNavigate, Link } from "react-router-dom";
+import styled from "styled-components";
+
+function Todo({ a }) {
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => {
+    return state.todos.todos;
+  });
+
+  const deleteTodo = (id) => {
+    dispatch(delTodo(id));
   };
 
-  //완료버튼의 onclick함수, map을 이용해 a.id(list에서 받아온 각각의 todo)와 콜백으로 불러온 todos의 각원소들의 id가 일치하는 경우를 찾아서 변경함
-  const done = () => {
-    let newDone = todos.map((todo) => {
-      if (a.id === todo.id) {
-        //콜백된 함수에 isDone을 원래값의 반대로 반환함( !todo.isDone  --> true는 false로 , false는 true로)
-        return {
-          ...todo,
-          isDone: !todo.isDone,
-        };
-      } else {
-        return { ...todo };
-      }
-    });
-    setTodos(newDone);
+  const doneTodos = (id) => {
+    dispatch(doneTodo(id));
   };
+
+  const StTodoContainer = styled.div`
+    border: 3px solid rgb(184, 170, 247);
+    width: 250px;
+    height: 150px;
+    border-radius: 15px;
+    padding: 3px 15px 5px 15px;
+    margin: 10px;
+  `;
+
+  const StBtn = styled.button`
+    border-radius: 10px;
+    background-color: transparent;
+    margin-right: 5px;
+    border: 2px solid;
+    border-color: rgb(184, 170, 247);
+    height: 30px;
+  `;
 
   return (
-    <div className="todo-container">
+    <StTodoContainer>
+      <Link to={`/detail/${a.id}`}>상세보기</Link>
       <h3>{a.title}</h3>
       <p>{a.content}</p>
       <div className="todobtn">
-        <button onClick={deleteTodo}>삭제하기</button>
-        <button onClick={done}>{a.isDone === true ? "취소" : "완료"}</button>
+        <StBtn
+          onClick={() => {
+            deleteTodo(a.id);
+          }}
+        >
+          삭제하기
+        </StBtn>
+        <StBtn
+          onClick={() => {
+            doneTodos(a.id);
+          }}
+        >
+          {a.isDone === true ? "취소" : "완료"}
+        </StBtn>
       </div>
-    </div>
+    </StTodoContainer>
   );
 }
 export default Todo;
