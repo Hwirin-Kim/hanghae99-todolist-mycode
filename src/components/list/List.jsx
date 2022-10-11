@@ -1,7 +1,13 @@
 import { useSelector } from "react-redux";
 import Todo from "../todo/Todo";
-//todos를 Layout으로부터 받아옴
+import styled from "styled-components";
+
 function List() {
+  const StList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+  `;
+
   const updateTodos = useSelector((state) => {
     return state.todos.todos;
   });
@@ -10,7 +16,7 @@ function List() {
     <div className="listContainer">
       <h2>Working...🔥</h2>
 
-      <div>
+      <StList>
         {updateTodos?.map((a) => {
           console.log("아무거나");
           //todos에 연결된 투두객체들의 리스트를 맵함수로 반복시킴
@@ -20,9 +26,9 @@ function List() {
             return null;
           }
         })}
-      </div>
+      </StList>
       <h2>Done..✔</h2>
-      <div>
+      <StList>
         {updateTodos?.map((a) => {
           if (a.isDone === true) {
             return <Todo a={a} key={a.id} />;
@@ -30,7 +36,7 @@ function List() {
             return null;
           }
         })}
-      </div>
+      </StList>
     </div>
   );
 }
